@@ -1,0 +1,44 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar
+*.gz
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# yt-dlp Studio specific
+yt-dlp-GUI.exe
+yt_dlp_studio_java.json
+*.log
+runtime/
+app/
+!app.png
+app.ico
+
+# jpackage artifacts
+*.msi
+*.dmg
+*.deb
+*.rpm
+*.pkg
+*.app

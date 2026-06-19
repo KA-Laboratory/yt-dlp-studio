@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ytdlp</groupId>
+    <artifactId>yt-dlp-studio</artifactId>
+    <version>5.1.0</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <flatlaf.version>3.7.1</flatlaf.version>
+        <gson.version>2.11.0</gson.version>
+        <junit.version>5.10.0</junit.version>
+        <jreleaser.version>1.8.0</jreleaser.version>
+    </properties>
+
+    <dependencies>
+        <!-- FlatLaf for modern UI -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <!-- Google Gson for JSON serialization/deserialization -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+
+        <!-- JUnit for testing -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Maven Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Shade Plugin to create a single executable JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>YtDlpStudio</mainClass>
+                                </transformer>
+                            </transformers>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- JReleaser Maven Plugin for native installers and releases -->
+            <plugin>
+                <groupId>org.jreleaser</groupId>
+                <artifactId>jreleaser-maven-plugin</artifactId>
+                <version>${jreleaser.version}</version>
+                <configuration>
+                    <project>
+                        <name>yt-dlp-studio</name>
+                        <version>${project.version}</version>
+                        <description>Modern yt-dlp GUI for Windows</description>
+                        <authors>
+                            <author>Manus AI</author>
+                        </authors>
+                    </project>
+                    <distributions>
+                        <yt-dlp-studio>
+                            <artifacts>
+                                <artifact>
+                                    <path>target/${project.artifactId}-${project.version}.jar</path>
+                                </artifact>
+                            </artifacts>
+                            <java>
+                                <mainClass>YtDlpStudio</mainClass>
+                                <version>${maven.compiler.target}</version>
+                            </java>
+                            <jlink>
+                                <enabled>true</enabled>
+                            </jlink>
+                        </yt-dlp-studio>
+                    </distributions>
+                    <assemblers>
+                        <jpackage>
+                            <windows>
+                                <imageName>yt-dlp-studio</imageName>
+                                <imageOptions>
+                                    <imageOption>--win-menu</imageOption>
+                                    <imageOption>--win-shortcut</imageOption>
+                                    <!-- Replace with a unique UUID for your application -->
+                                    <imageOption>--win-upgrade-uuid 12345678-1234-1234-1234-123456789012</imageOption>
+                                </imageOptions>
+                                <formats>
+                                    <format>msi</format>
+                                    <format>exe</format>
+                                </formats>
+                                <icon>src/main/resources/app.ico</icon>
+                            </windows>
+                        </jpackage>
+                    </assemblers>
+                    <release>
+                        <github>
+                            <owner>your-github-username</owner>
+                            <name>yt-dlp-studio</name>
+                            <tagName>v{{projectVersion}}</tagName>
+                            <overwrite>true</overwrite>
+                            <uploadAssets>true</uploadAssets>
+                        </github>
+                    </release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
